@@ -66,7 +66,7 @@ contributions you make are **greatly appreciated**.
 
 ## License
 
-Distributed under the MIT License. See [`LICENSE`](https://github.com/leolani/cltl-languagegeneration/blob/main/LICENCE)
+Distributed under the MIT License. See [`LICENSE`](https://github.com/leolani/cltl-knowledgelinking/blob/main/LICENCE)
 for more information.
 
 ## Authors

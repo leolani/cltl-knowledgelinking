@@ -6,7 +6,7 @@ class BasicLinker(object):
     def __init__(self):
         # type: () -> None
         """
-        Generate natural language based on structured data
+        Generate URI for entity and predicate based on structured data
 
         Parameters
         ----------
