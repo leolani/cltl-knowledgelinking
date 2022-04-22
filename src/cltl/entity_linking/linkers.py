@@ -18,6 +18,8 @@ from cltl.brain.infrastructure.rdf_builder import RdfBuilder
 from cltl.entity_linking.api import BasicLinker
 from cltl.entity_linking.entity_querying import EntitySearch
 
+import jellyfish
+
 
 class NamedEntityLinker(BasicLinker):
 
@@ -35,24 +37,26 @@ class NamedEntityLinker(BasicLinker):
 
     def link_entities(self, capsule):
         if 'person' in capsule['subject']['type']:
-            subject_label = capsule['subject']['label']
-            pop_uri = self._entity_search.search_entities_by_label(subject_label)
-            rec_uri = self._entity_search.search_entities_by_label(subject_label, algorithm='recency')
-            if not pop_uri and not rec_uri:
+            uri = self._entity_search.search_entities_by_label(capsule['subject']['label'])
+            if uri:
+                capsule['subject']['uri'] = uri
+            else:
+                uri = self.fuzzy_label_match(capsule['subject']['label'])
+            if uri:
+                capsule['subject']['uri'] = uri
+            else:
                 capsule['subject']['uri'] = str(
                     self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
-            elif pop_uri == rec_uri:
-                capsule['subject']['uri'] = pop_uri
-            else:
-                capsule['subject']['uri'] = pop_uri
-
         else:
             capsule['subject']['uri'] = str(
                 self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
 
         if 'person' in capsule['object']['type']:
-            object_label = capsule['object']['label']
-            uri = self._entity_search.search_entities_by_label(object_label)
+            uri = self._entity_search.search_entities_by_label(capsule['object']['label'])
+            if uri:
+                capsule['object']['uri'] = uri
+            else:
+                uri = self.fuzzy_label_match(capsule['object']['label'])
             if uri:
                 capsule['object']['uri'] = uri
             else:
@@ -69,6 +73,22 @@ class NamedEntityLinker(BasicLinker):
             self._rdf_builder.create_resource_uri('N2MU', capsule['predicate']['label'].lower()))
 
         return capsule
+
+    def fuzzy_label_match(self, label, algorithm='popularity'):
+        entity_list = self._entity_search.search_entities(algorithm)
+        smallest = 5
+        match = 'placeholder'
+        for entity in entity_list:
+            levenshtein_distance = jellyfish.levenshtein_distance(label, entity['label'])
+            if levenshtein_distance < smallest:
+                smallest = levenshtein_distance
+                found_label = entity['label']
+                match = entity['uri']
+
+        if match != 'placeholder':
+            return match
+        else:
+            return None
 
 
 class PronounLinker(BasicLinker):

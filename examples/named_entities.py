@@ -16,8 +16,8 @@ test_capsule = {
         "utterance_type": UtteranceType.STATEMENT,
         "position": "0-25",
         "subject": {
-            "label": "bram",
-            "type": ["object"]
+            "label": "brahms",
+            "type": ["person"]
         },
         "predicate": {
             "label": "be-from"

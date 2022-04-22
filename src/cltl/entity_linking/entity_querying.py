@@ -21,10 +21,15 @@ class EntitySearch(BasicBrain):
 
         return uri
 
-    def search_entities(self):
-        entlist = self._get_most_popular()
+    def search_entities(self, algorithm='popularity'):
+        if algorithm == 'popularity':
+            entity_list = self._get_most_popular()
+        elif algorithm == 'recency':
+            entity_list = self._get_most_recent()
+        else:
+            entity_list = []
 
-        return entlist
+        return entity_list
 
     def _get_most_popular_by_label(self, ne_text):
         query = read_query('/Users/jaapkruijt/Documents/GitHub/cltl-knowledgelinking/src/cltl/entity_linking/popularity_label') % ne_text
@@ -64,18 +69,30 @@ class EntitySearch(BasicBrain):
 
         return pop_ordered
 
+    def _get_most_recent(self):
+        query = read_query('/Users/jaapkruijt/Documents/GitHub/cltl-knowledgelinking/src/cltl/entity_linking/recency_last_mention')
+        response = self._submit_query(query)
+        rec_ordered = []
+        for row in response:
+            uri = row['person']['value']
+            label = row['label']['value']
+            date = f"{row['day']['value']}_{row['month']['value']}_{row['year']['value']}"
+            rec_ordered.append({'uri': uri, 'label': label, 'date': date})
+
+        return rec_ordered
+
 
 if __name__ == "__main__":
     with TemporaryDirectory(prefix="brain-log") as log_path:
         entity_search = EntitySearch(address="http://localhost:7200/repositories/sandbox",
                                      log_dir=Path(log_path))
 
-        # recent = entity_search.search_entities_by_label('selene', algorithm='recency')
-        # popular = entity_search.search_entities_by_label('selene')
-        #
-        # print(recent)
-        # print(popular)
+        recent = entity_search.search_entities_by_label('selene', algorithm='recency')
+        popular = entity_search.search_entities_by_label('selene')
 
-        popularity = entity_search.search_entities()
-        for dictionary in popularity:
+        print(recent)
+        print(popular)
+
+        recent = entity_search.search_entities('recency')
+        for dictionary in recent:
             print(dictionary)

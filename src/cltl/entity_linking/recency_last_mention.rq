@@ -7,13 +7,13 @@ PREFIX sem: <http://semanticweb.cs.vu.nl/2009/11/sem/>
 PREFIX gaf: <http://groundedannotationframework.org/gaf#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 
-select ?person ?chatid ?time ?day ?month ?year
+select ?person ?chatid ?label ?time ?day ?month ?year
 where {
-    BIND("%s" AS ?label)
 
     ?chat rdf:type grasp:Chat .
     ?chat n2mu:id ?chatid .
 
+    ?person rdf:type n2mu:person.
     ?person rdfs:label ?label.
     ?person gaf:denotedIn ?mention .
     ?mention prov:wasDerivedFrom ?utterance .
