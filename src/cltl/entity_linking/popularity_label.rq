@@ -1,0 +1,11 @@
+prefix gaf: <http://groundedannotationframework.org/gaf#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+select ?ent (COUNT(DISTINCT ?e) as ?num_mentions) where{
+    ?ent rdfs:label "%s".
+
+    ?ent gaf:denotedIn ?e.
+    }
+
+group by ?ent
+    order by DESC(COUNT(DISTINCT ?e))

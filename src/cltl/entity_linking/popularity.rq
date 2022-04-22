@@ -1,11 +1,13 @@
 prefix gaf: <http://groundedannotationframework.org/gaf#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX n2mu: <http://cltl.nl/leolani/n2mu/>
 
-select ?ent (COUNT(DISTINCT ?e) as ?num_mentions) where{
-    ?ent rdfs:label "%s".
-
+select ?ent (COUNT(DISTINCT ?e) as ?num_mentions) ?l where{
+    ?ent rdf:type n2mu:person.
     ?ent gaf:denotedIn ?e.
+    ?ent rdfs:label ?l
     }
 
-group by ?ent
+group by ?ent ?l
     order by DESC(COUNT(DISTINCT ?e))

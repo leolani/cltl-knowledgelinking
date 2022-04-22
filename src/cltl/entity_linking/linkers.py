@@ -36,12 +36,16 @@ class NamedEntityLinker(BasicLinker):
     def link_entities(self, capsule):
         if 'person' in capsule['subject']['type']:
             subject_label = capsule['subject']['label']
-            uri = self._entity_search.search_entities_by_label(subject_label)
-            if uri:
-                capsule['subject']['uri'] = uri
-            else:
+            pop_uri = self._entity_search.search_entities_by_label(subject_label)
+            rec_uri = self._entity_search.search_entities_by_label(subject_label, algorithm='recency')
+            if not pop_uri and not rec_uri:
                 capsule['subject']['uri'] = str(
                     self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
+            elif pop_uri == rec_uri:
+                capsule['subject']['uri'] = pop_uri
+            else:
+                capsule['subject']['uri'] = pop_uri
+
         else:
             capsule['subject']['uri'] = str(
                 self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
