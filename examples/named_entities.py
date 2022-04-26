@@ -1,4 +1,4 @@
-from cltl.entity_linking.linkers import  NamedEntityLinker
+from cltl.entity_linking.linkers import NamedEntityLinker, PronounLinker
 from tempfile import TemporaryDirectory
 from pathlib import Path
 
@@ -12,11 +12,11 @@ test_capsule = {
         "chat": 1,
         "turn": 2,
         "author": "piek",
-        "utterance": "Bram is from Spain",
+        "utterance": "He is from Spain",
         "utterance_type": UtteranceType.STATEMENT,
         "position": "0-25",
         "subject": {
-            "label": "brahms",
+            "label": "he",
             "type": ["person"]
         },
         "predicate": {
@@ -44,7 +44,7 @@ test_capsule = {
 
 if __name__ == "__main__":
     with TemporaryDirectory(prefix="brain-log") as log_path:
-        linker = NamedEntityLinker(address="http://localhost:7200/repositories/sandbox",
+        linker = PronounLinker(address="http://localhost:7200/repositories/sandbox",
                                    log_dir=Path(log_path))
 
         capsule = linker.link(test_capsule)

@@ -22,7 +22,7 @@ class DisambiguationService:
     @classmethod
     def from_config(cls, linkers: List[BasicLinker], emissor_data: EmissorDataClient, event_bus: EventBus, resource_manager: ResourceManager,
                     config_manager: ConfigurationManager):
-        config = config_manager.get_config("cltl.reply_generation")
+        config = config_manager.get_config("cltl.entity_linking")
 
         return cls(config.get("topic_input"), config.get("topic_output"), linkers, emissor_data, event_bus, resource_manager)
 

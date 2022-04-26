@@ -22,6 +22,12 @@ import jellyfish
 
 
 class NamedEntityLinker(BasicLinker):
+    """
+    Used for disambiguation of Named Entities in text. Call when the part of speech tag of a label is 'NNP'
+    Connection with GraphDB is needed to run the linker, since it queries the brain
+    Input: capsule without url
+    Output: capsule with url
+    """
 
     def __init__(self, address, log_dir):
 
@@ -92,6 +98,12 @@ class NamedEntityLinker(BasicLinker):
 
 
 class PronounLinker(BasicLinker):
+    """
+        Used for disambiguation of pronouns in text. Call when the part of speech tag of a label is 'PRP'
+        Connection with GraphDB is needed to run the linker, since it queries the brain
+        Input: capsule without url
+        Output: capsule with url
+        """
 
     def __init__(self, address, log_dir):
 
@@ -112,6 +124,11 @@ class PronounLinker(BasicLinker):
             if uri:
                 capsule['subject']['uri'] = uri
             else:
+                entity_list = self._entity_search.search_entities(algorithm='recency')
+                uri = entity_list[0]['uri']
+            if uri:
+                capsule['subject']['uri'] = uri
+            else:
                 capsule['subject']['uri'] = str(
                     self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
         else:
@@ -121,6 +138,11 @@ class PronounLinker(BasicLinker):
         if capsule['object']['type'] == ['person']:
             object_label = capsule['object']['label']
             uri = self._entity_search.search_entities_by_label(object_label, algorithm='recency')
+            if uri:
+                capsule['object']['uri'] = uri
+            else:
+                entity_list = self._entity_search.search_entities(algorithm='recency')
+                uri = entity_list[0]['uri']
             if uri:
                 capsule['object']['uri'] = uri
             else:
