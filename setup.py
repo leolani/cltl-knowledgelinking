@@ -19,8 +19,8 @@ setup(
         "Baier": ("Thomas Baier", "t.baier@vu.nl")
     },
     package_dir={'': 'src'},
-    packages=find_namespace_packages(include=['cltl.*'], where='src'),
-    package_data={'cltl.entity_linking': ['data/*']},
+    packages=find_namespace_packages(include=['cltl.*', 'cltl_service.*'], where='src'),
+    package_data={'cltl.entity_linking': ['queries/*']},
     python_requires='>=3.7',
     install_requires=[
         'cltl.brain',
