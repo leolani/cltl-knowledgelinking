@@ -1,7 +1,6 @@
 import logging
 from typing import List
 
-from cltl.brain.utils.helper_functions import brain_response_to_json
 from cltl.combot.event.emissor import TextSignalEvent
 from cltl.combot.infra.config import ConfigurationManager
 from cltl.combot.infra.event import Event, EventBus
@@ -20,11 +19,13 @@ CONTENT_TYPE_SEPARATOR = ';'
 
 class DisambiguationService:
     @classmethod
-    def from_config(cls, linkers: List[BasicLinker], emissor_data: EmissorDataClient, event_bus: EventBus, resource_manager: ResourceManager,
+    def from_config(cls, linkers: List[BasicLinker], emissor_data: EmissorDataClient, event_bus: EventBus,
+                    resource_manager: ResourceManager,
                     config_manager: ConfigurationManager):
         config = config_manager.get_config("cltl.entity_linking")
 
-        return cls(config.get("topic_input"), config.get("topic_output"), linkers, emissor_data, event_bus, resource_manager)
+        return cls(config.get("topic_input"), config.get("topic_output"), linkers, emissor_data, event_bus,
+                   resource_manager)
 
     def __init__(self, input_topic: str, output_topic: str, linkers: List[BasicLinker], emissor_data: EmissorDataClient,
                  event_bus: EventBus, resource_manager: ResourceManager):

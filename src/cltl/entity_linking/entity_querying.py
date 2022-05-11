@@ -32,7 +32,7 @@ class EntitySearch(BasicBrain):
         return entity_list
 
     def _get_most_popular_by_label(self, ne_text):
-        query = read_query('/Users/jaapkruijt/Documents/GitHub/cltl-knowledgelinking/src/cltl/entity_linking/popularity_label') % ne_text
+        query = read_query('./queries/popularity_label') % ne_text
         response = self._submit_query(query)
         # print(response)
         pop_ordered = []
@@ -47,7 +47,7 @@ class EntitySearch(BasicBrain):
         return uri
 
     def _get_most_recent_by_label(self, ne_text):
-        query = read_query('/Users/jaapkruijt/Documents/GitHub/cltl-knowledgelinking/src/cltl/entity_linking/recency_last_mention_label') % ne_text
+        query = read_query('./queries/recency_last_mention_label') % ne_text
         response = self._submit_query(query)
         if response:
             uri = response[0]['person']['value']
@@ -57,7 +57,7 @@ class EntitySearch(BasicBrain):
         return uri
 
     def _get_most_popular(self):
-        query = read_query('/Users/jaapkruijt/Documents/GitHub/cltl-knowledgelinking/src/cltl/entity_linking/popularity')
+        query = read_query('./queries/popularity')
         response = self._submit_query(query)
 
         pop_ordered = []
@@ -70,7 +70,7 @@ class EntitySearch(BasicBrain):
         return pop_ordered
 
     def _get_most_recent(self):
-        query = read_query('/Users/jaapkruijt/Documents/GitHub/cltl-knowledgelinking/src/cltl/entity_linking/recency_last_mention')
+        query = read_query('./queries/recency_last_mention')
         response = self._submit_query(query)
         rec_ordered = []
         for row in response:

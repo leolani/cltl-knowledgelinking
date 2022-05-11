@@ -23,7 +23,8 @@ setup(
     package_data={'cltl.entity_linking': ['data/*']},
     python_requires='>=3.7',
     install_requires=[
-        'cltl.brain==0.0.dev8'
+        'cltl.brain==0.0.dev8',
+        'jellyfish==0.9.0'
     ],
     setup_requires=['flake8']
 )
