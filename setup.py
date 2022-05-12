@@ -26,5 +26,10 @@ setup(
         'cltl.brain',
         'jellyfish==0.9.0'
     ],
+    extras_require={
+        "service": [
+            "cltl.combot",
+        ]
+    },
     setup_requires=['flake8']
 )
