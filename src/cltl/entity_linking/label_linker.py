@@ -23,9 +23,17 @@ class LabelBasedLinker(BasicLinker):
         return capsule
 
     def link_entities(self, capsule):
-        capsule['subject']['uri'] = str(
-            self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
-        capsule['object']['uri'] = str(self._rdf_builder.create_resource_uri('LW', capsule['object']['label'].lower()))
+        capsule = self._link_entity(capsule, 'subject')
+        capsule = self._link_entity(capsule, 'object')
+        capsule = self._link_entity(capsule, 'author')
+
+        return capsule
+
+    def _link_entity(self, capsule, entity_position):
+        if entity_position not in capsule:
+            return capsule
+
+        capsule[entity_position]['uri'] = str(self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
 
         return capsule
 

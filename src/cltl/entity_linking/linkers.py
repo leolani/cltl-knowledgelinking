@@ -14,11 +14,11 @@ Upon encountering NE do:
     5) Add URI to Annotation
 """
 
+import jellyfish
 from cltl.brain.infrastructure.rdf_builder import RdfBuilder
+
 from cltl.entity_linking.api import BasicLinker
 from cltl.entity_linking.entity_querying import EntitySearch
-
-import jellyfish
 
 
 class NamedEntityLinker(BasicLinker):
@@ -42,35 +42,30 @@ class NamedEntityLinker(BasicLinker):
         return capsule
 
     def link_entities(self, capsule):
-        if 'person' in capsule['subject']['type']:
-            uri = self._entity_search.search_entities_by_label(capsule['subject']['label'])
-            if uri:
-                capsule['subject']['uri'] = uri
-            else:
-                uri = self.fuzzy_label_match(capsule['subject']['label'])
-            if uri:
-                capsule['subject']['uri'] = uri
-            else:
-                capsule['subject']['uri'] = str(
-                    self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
-        else:
-            capsule['subject']['uri'] = str(
-                self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
+        capsule = self._link_entity(capsule, 'subject')
+        capsule = self._link_entity(capsule, 'object')
+        capsule = self._link_entity(capsule, 'author')
 
-        if 'person' in capsule['object']['type']:
-            uri = self._entity_search.search_entities_by_label(capsule['object']['label'])
+        return capsule
+
+    def _link_entity(self, capsule, entity_position):
+        if entity_position not in capsule:
+            return capsule
+
+        if 'person' in capsule[entity_position]['type']:
+            uri = self._entity_search.search_entities_by_label(capsule[entity_position]['label'])
             if uri:
-                capsule['object']['uri'] = uri
+                capsule[entity_position]['uri'] = uri
             else:
-                uri = self.fuzzy_label_match(capsule['object']['label'])
+                uri = self.fuzzy_label_match(capsule[entity_position]['label'])
             if uri:
-                capsule['object']['uri'] = uri
+                capsule[entity_position]['uri'] = uri
             else:
-                capsule['object']['uri'] = str(
-                    self._rdf_builder.create_resource_uri('LW', capsule['object']['label'].lower()))
+                capsule[entity_position]['uri'] = str(
+                    self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
         else:
-            capsule['object']['uri'] = str(
-                self._rdf_builder.create_resource_uri('LW', capsule['object']['label'].lower()))
+            capsule[entity_position]['uri'] = str(
+                self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
 
         return capsule
 
@@ -88,7 +83,6 @@ class NamedEntityLinker(BasicLinker):
             levenshtein_distance = jellyfish.levenshtein_distance(label, entity['label'])
             if levenshtein_distance < smallest:
                 smallest = levenshtein_distance
-                found_label = entity['label']
                 match = entity['uri']
 
         if match != 'placeholder':
@@ -118,39 +112,32 @@ class PronounLinker(BasicLinker):
         return capsule
 
     def link_entities(self, capsule):
-        if capsule['subject']['type'] == ['person']:
-            subject_label = capsule['subject']['label']
-            uri = self._entity_search.search_entities_by_label(subject_label, algorithm='recency')
-            if uri:
-                capsule['subject']['uri'] = uri
-            else:
-                entity_list = self._entity_search.search_entities(algorithm='recency')
-                uri = entity_list[0]['uri']
-            if uri:
-                capsule['subject']['uri'] = uri
-            else:
-                capsule['subject']['uri'] = str(
-                    self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
-        else:
-            capsule['subject']['uri'] = str(
-                self._rdf_builder.create_resource_uri('LW', capsule['subject']['label'].lower()))
+        capsule = self._link_entity(capsule, 'subject')
+        capsule = self._link_entity(capsule, 'object')
+        capsule = self._link_entity(capsule, 'author')
 
-        if capsule['object']['type'] == ['person']:
-            object_label = capsule['object']['label']
-            uri = self._entity_search.search_entities_by_label(object_label, algorithm='recency')
+        return capsule
+
+    def _link_entity(self, capsule, entity_position):
+        if entity_position not in capsule:
+            return capsule
+
+        if capsule[entity_position]['type'] == ['person']:
+            entity_label = capsule[entity_position]['label']
+            uri = self._entity_search.search_entities_by_label(entity_label, algorithm='recency')
             if uri:
-                capsule['object']['uri'] = uri
+                capsule[entity_position]['uri'] = uri
             else:
                 entity_list = self._entity_search.search_entities(algorithm='recency')
                 uri = entity_list[0]['uri']
             if uri:
-                capsule['object']['uri'] = uri
+                capsule[entity_position]['uri'] = uri
             else:
-                capsule['object']['uri'] = str(
-                    self._rdf_builder.create_resource_uri('LW', capsule['object']['label'].lower()))
+                capsule[entity_position]['uri'] = str(
+                    self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
         else:
-            capsule['object']['uri'] = str(
-                self._rdf_builder.create_resource_uri('LW', capsule['object']['label'].lower()))
+            capsule[entity_position]['uri'] = str(
+                self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
 
         return capsule
 
@@ -159,8 +146,4 @@ class PronounLinker(BasicLinker):
             self._rdf_builder.create_resource_uri('N2MU', capsule['predicate']['label'].lower()))
 
         return capsule
-
-
-
-
 
