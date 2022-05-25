@@ -1,8 +1,26 @@
-from cltl.brain.basic_brain import BasicBrain
-from cltl.brain.utils.helper_functions import read_query
-
-from tempfile import TemporaryDirectory
 from pathlib import Path
+from tempfile import TemporaryDirectory
+
+import importlib_resources as pkg_resources
+from cltl.brain.basic_brain import BasicBrain
+import cltl
+
+
+def read_query(query_filename):
+    """
+    Read a query from file and return as a string
+    Parameters
+    ----------
+    query_filename: str name of the query. It will be looked for in the queries folder of this project
+
+    Returns
+    -------
+    query: str the query with placeholders for the query parameters, as a string to be formatted
+
+    """
+    resources = pkg_resources.files(cltl.entity_linking)
+
+    return (resources / f"{query_filename}.rq").read_text()
 
 
 class EntitySearch(BasicBrain):

@@ -53,18 +53,18 @@ class DisambiguationService:
         self._topic_worker = None
 
     def _process(self, event: Event[List[dict]]):
-        linked_capsule = []
-        for capsule in event.payload:
-            logger.debug("Capsule: (%s)", capsule)
-            try:
-                for linker in self._linkers:
-                    updated_capsule = linker.link(capsule)
-                    if updated_capsule:
-                        break
+        try:
+            logger.debug("Linking capsules")
+            linked_capsule = [self._link_capsule(capsule) for capsule in event.payload]
+            linked_capsule = [caps for caps in linked_capsule if caps is not None]
 
-                linked_capsule.append(updated_capsule)
-            except:
-                logger.exception("Replier error")
+            if linked_capsule:
+                logger.debug("Linked capsules: (%s)", linked_capsule)
+                self._event_bus.publish(self._output_topic, Event.for_payload(linked_capsule))
+        except:
+            logger.exception("Error during linking")
 
-        if linked_capsule:
-            self._event_bus.publish(self._output_topic, Event.for_payload(linked_capsule))
+    def _link_capsule(self, capsule):
+        return next((linker.link(capsule) for linker in self._linkers), None)
+
+
