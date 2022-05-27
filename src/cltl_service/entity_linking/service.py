@@ -62,7 +62,7 @@ class DisambiguationService:
                 logger.debug("Linked capsules: (%s)", linked_capsule)
                 self._event_bus.publish(self._output_topic, Event.for_payload(linked_capsule))
         except:
-            logger.exception("Error during linking")
+            logger.exception("Error during linking (%s)", event.payload)
 
     def _link_capsule(self, capsule):
         return next((linker.link(capsule) for linker in self._linkers), None)

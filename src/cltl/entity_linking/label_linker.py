@@ -38,7 +38,8 @@ class LabelBasedLinker(BasicLinker):
         return capsule
 
     def link_predicates(self, capsule):
-        capsule['predicate']['uri'] = str(
-            self._rdf_builder.create_resource_uri('N2MU', capsule['predicate']['label'].lower()))
+        if 'predicate' in capsule:
+            capsule['predicate']['uri'] = str(
+                self._rdf_builder.create_resource_uri('N2MU', capsule['predicate']['label'].lower()))
 
         return capsule
