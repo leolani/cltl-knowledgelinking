@@ -66,5 +66,3 @@ class DisambiguationService:
 
     def _link_capsule(self, capsule):
         return next((linker.link(capsule) for linker in self._linkers), None)
-
-
