@@ -3,7 +3,7 @@ from tempfile import TemporaryDirectory
 
 import importlib_resources as pkg_resources
 from cltl.brain.basic_brain import BasicBrain
-import cltl
+import cltl.entity_linking
 
 
 def read_query(query_filename):
@@ -26,7 +26,6 @@ def read_query(query_filename):
 class EntitySearch(BasicBrain):
 
     def __init__(self, address, log_dir, clear_all=False):
-
         super(EntitySearch, self).__init__(address, log_dir, clear_all, is_submodule=True)
 
     def search_entities_by_label(self, ne_text, algorithm='popularity'):
@@ -99,6 +98,14 @@ class EntitySearch(BasicBrain):
 
         return rec_ordered
 
+    def search_entity_by_face(self, id):
+        query = read_query('./queries/face') % id
+        response = self._submit_query(query)
+        if response:
+            return response[0]['person']['value'], response[0]['name']['value']
+        else:
+            return None, None
+
 
 if __name__ == "__main__":
     with TemporaryDirectory(prefix="brain-log") as log_path:
@@ -107,9 +114,11 @@ if __name__ == "__main__":
 
         recent = entity_search.search_entities_by_label('selene', algorithm='recency')
         popular = entity_search.search_entities_by_label('selene')
+        face = entity_search.search_entity_by_faceID("123")
 
         print(recent)
         print(popular)
+        print(face)
 
         recent = entity_search.search_entities('recency')
         for dictionary in recent:
