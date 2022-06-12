@@ -14,13 +14,13 @@ class FaceIDLinker(BasicLinker):
         capsule = self._link_entity(capsule, 'subject')
         capsule = self._link_entity(capsule, 'object')
         capsule = self._link_entity(capsule, 'author')
+        capsule = self._link_entity(capsule, 'item')
 
         return capsule
 
     def _link_entity(self, capsule, entity_position):
         if (entity_position not in capsule
-                or capsule[entity_position]['uri']
-                or capsule[entity_position]['type'] != 'face'):
+                or 'face' not in capsule[entity_position]['type']):
             return capsule
 
         face_uri = self._create_uri(capsule[entity_position]['label'])

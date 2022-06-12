@@ -26,6 +26,7 @@ class LabelBasedLinker(BasicLinker):
         capsule = self._link_entity(capsule, 'subject')
         capsule = self._link_entity(capsule, 'object')
         capsule = self._link_entity(capsule, 'author')
+        capsule = self._link_entity(capsule, 'item')
 
         return capsule
 

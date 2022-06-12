@@ -16,8 +16,8 @@ Upon encountering NE do:
 
 import jellyfish
 from cltl.brain.infrastructure.rdf_builder import RdfBuilder
-
 from cltl.combot.infra.time_util import timestamp_now
+
 from cltl.entity_linking.api import BasicLinker
 from cltl.entity_linking.entity_querying import EntitySearch
 
@@ -46,6 +46,7 @@ class NamedEntityLinker(BasicLinker):
         capsule = self._link_entity(capsule, 'subject')
         capsule = self._link_entity(capsule, 'object')
         capsule = self._link_entity(capsule, 'author')
+        capsule = self._link_entity(capsule, 'item')
 
         return capsule
 
@@ -117,6 +118,7 @@ class PronounLinker(BasicLinker):
         capsule = self._link_entity(capsule, 'subject')
         capsule = self._link_entity(capsule, 'object')
         capsule = self._link_entity(capsule, 'author')
+        capsule = self._link_entity(capsule, 'item')
 
         return capsule
 
@@ -124,7 +126,7 @@ class PronounLinker(BasicLinker):
         if entity_position not in capsule or capsule[entity_position]['uri']:
             return capsule
 
-        if capsule[entity_position]['type'] == ['person']:
+        if 'person' in capsule[entity_position]['type']:
             entity_label = capsule[entity_position]['label']
             uri = self._entity_search.search_entities_by_label(entity_label, algorithm='recency')
             if uri:
