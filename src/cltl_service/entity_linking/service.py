@@ -65,4 +65,7 @@ class DisambiguationService:
             logger.exception("Error during linking (%s)", event.payload)
 
     def _link_capsule(self, capsule):
-        return next((linker.link(capsule) for linker in self._linkers), None)
+        for linker in self._linkers:
+            capsule = linker.link(capsule)
+
+        return capsule
