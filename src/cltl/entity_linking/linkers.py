@@ -63,7 +63,8 @@ class NamedEntityLinker(BasicLinker):
             if uri:
                 capsule[entity_position]['uri'] = uri
             else:
-                person_id = f"{capsule[entity_position]['label'].lower()}_{timestamp_now()}"
+                # person_id = f"{capsule[entity_position]['label'].lower()}_{timestamp_now()}"
+                person_id = f"{capsule[entity_position]['label'].lower()}"
                 capsule[entity_position]['uri'] = str(self._rdf_builder.create_resource_uri('LW', person_id))
         else:
             capsule[entity_position]['uri'] = str(
