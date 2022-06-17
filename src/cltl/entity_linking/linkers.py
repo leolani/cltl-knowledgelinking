@@ -66,7 +66,7 @@ class NamedEntityLinker(BasicLinker):
                 # person_id = f"{capsule[entity_position]['label'].lower()}_{timestamp_now()}"
                 person_id = f"{capsule[entity_position]['label'].lower()}"
                 capsule[entity_position]['uri'] = str(self._rdf_builder.create_resource_uri('LW', person_id))
-        else:
+        elif capsule[entity_position]['label']:
             capsule[entity_position]['uri'] = str(
                 self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
 
@@ -140,7 +140,7 @@ class PronounLinker(BasicLinker):
             else:
                 capsule[entity_position]['uri'] = str(
                     self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
-        else:
+        elif capsule[entity_position]['label']:
             capsule[entity_position]['uri'] = str(
                 self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
 
