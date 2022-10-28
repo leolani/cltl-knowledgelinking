@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
         recent = entity_search.search_entities_by_label('selene', algorithm='recency')
         popular = entity_search.search_entities_by_label('selene')
-        face = entity_search.search_entity_by_faceID("123")
+        face = entity_search.search_entity_by_face("123")
 
         print(recent)
         print(popular)
