@@ -54,12 +54,12 @@ class DisambiguationService:
 
     def _process(self, event: Event[List[dict]]):
         try:
-            logger.debug("Linking capsules")
+            logger.debug("Linking capsules for event %s: (%s)", event.id, event.payload)
             linked_capsule = [self._link_capsule(capsule) for capsule in event.payload]
             linked_capsule = [caps for caps in linked_capsule if caps is not None]
 
             if linked_capsule:
-                logger.debug("Linked capsules: (%s)", linked_capsule)
+                logger.debug("Linked capsules for event %s: (%s)", event.id, linked_capsule)
                 self._event_bus.publish(self._output_topic, Event.for_payload(linked_capsule))
         except:
             logger.exception("Error during linking (%s)", event.payload)

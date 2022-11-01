@@ -80,19 +80,16 @@ class NamedEntityLinker(BasicLinker):
         return capsule
 
     def fuzzy_label_match(self, label, algorithm='popularity'):
-        entity_list = self._entity_search.search_entities(algorithm)
-        smallest = 5
-        match = 'placeholder'
-        for entity in entity_list:
-            levenshtein_distance = jellyfish.levenshtein_distance(label, entity['label'])
-            if levenshtein_distance < smallest:
-                smallest = levenshtein_distance
-                match = entity['uri']
+        scored_matches = [(jellyfish.levenshtein_distance(label, entity['label']), entity['uri'])
+                          for entity in self._entity_search.search_entities(algorithm)]
+        scored_matches = list(filter(lambda match: match[0] < len(label) // 4, scored_matches))
 
-        if match != 'placeholder':
-            return match
-        else:
+        if not scored_matches:
             return None
+
+        _, uri = scored_matches[0]
+
+        return uri
 
 
 class PronounLinker(BasicLinker):
