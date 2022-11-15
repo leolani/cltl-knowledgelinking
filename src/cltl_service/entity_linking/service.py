@@ -64,7 +64,7 @@ class DisambiguationService:
             self._process_input(event)
 
     def _process_scenario(self, event: Event[List[dict]]):
-        if event.payload.scenario.context.speaker:
+        if event.payload.scenario.context.speaker and event.payload.scenario.context.speaker.uri:
             speaker = event.payload.scenario.context.speaker
             self._agent_linker.set_speaker(speaker.name, ['person'], speaker.uri)
             logger.debug("Set speaker to %s", speaker)
