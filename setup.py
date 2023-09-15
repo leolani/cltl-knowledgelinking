@@ -24,7 +24,7 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'cltl.brain',
-        'jellyfish==0.9.0'
+        'jellyfish'
     ],
     extras_require={
         "service": [
