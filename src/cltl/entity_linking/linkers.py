@@ -54,21 +54,24 @@ class NamedEntityLinker(BasicLinker):
         if entity_position not in capsule or capsule[entity_position]['uri']:
             return capsule
 
+        uri = None
         if 'person' in capsule[entity_position]['type']:
-            uri = self._entity_search.search_entities_by_label(capsule[entity_position]['label'])
-            if uri:
-                capsule[entity_position]['uri'] = uri
-            else:
+            uri = self._entity_search.search_entities_by_name(capsule[entity_position]['label'])
+            if not uri:
                 uri = self.fuzzy_label_match(capsule[entity_position]['label'])
-            if uri:
-                capsule[entity_position]['uri'] = uri
-            else:
+            if not uri:
                 # person_id = f"{capsule[entity_position]['label'].lower()}_{timestamp_now()}"
                 person_id = f"{capsule[entity_position]['label'].lower()}"
-                capsule[entity_position]['uri'] = str(self._rdf_builder.create_resource_uri('LW', person_id))
+                uri = str(self._rdf_builder.create_resource_uri('LW', person_id))
         elif capsule[entity_position]['label']:
-            capsule[entity_position]['uri'] = str(
-                self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
+            uri = self._entity_search.search_entities_by_label(capsule[entity_position]['label'])
+            if not uri:
+                # entity_id = f"{capsule[entity_position]['label'].lower()}_{timestamp_now()}"
+                entity_id = f"{capsule[entity_position]['label'].lower()}"
+                uri = str(self._rdf_builder.create_resource_uri('LW', entity_id))
+
+        if uri:
+            capsule[entity_position]['uri'] = uri
 
         return capsule
 
@@ -87,7 +90,7 @@ class NamedEntityLinker(BasicLinker):
         if not scored_matches:
             return None
 
-        _, uri = scored_matches[0]
+        _, uri = sorted(scored_matches[0], key=lambda scored: scored[0])[0]
 
         return uri
 
