@@ -86,6 +86,10 @@ class EntitySearch(BasicBrain):
         logger.debug("Found popular entities by label %s", response)
         pop_ordered = []
         for row in response:
+            if ('ent' not in row
+                or not row['ent']['value']
+                or 'num_mentions' not in row):
+                continue
             uri = row['ent']['value']
             occurrences = row['num_mentions']['value']
             pop_ordered.append((uri, occurrences))
@@ -112,6 +116,11 @@ class EntitySearch(BasicBrain):
 
         pop_ordered = []
         for row in response:
+            if ('ent' not in row
+                or not row['ent']['value']
+                or 'l' not in row
+                or 'num_mentions' not in row):
+                continue
             uri = row['ent']['value']
             occurrences = row['num_mentions']['value']
             label = row['l']['value']
@@ -149,11 +158,11 @@ if __name__ == "__main__":
 
         recent = entity_search.search_entities_by_label('selene', algorithm='recency')
         popular = entity_search.search_entities_by_label('selene')
-        face = entity_search.search_entity_by_face("123")
+        # face = entity_search.search_entity_by_face("123")
 
         print(recent)
         print(popular)
-        print(face)
+        # print(face)
 
         recent = entity_search.search_entities('recency')
         for dictionary in recent:
