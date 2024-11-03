@@ -33,13 +33,13 @@ class LabelBasedLinker(BasicLinker):
     def _link_entity(self, capsule, entity_position):
         if entity_position not in capsule or capsule[entity_position]['uri']:
             return capsule
-        if 'label' in capsule[entity_position] and capsule[entity_position]['label']:
+        if 'label' in capsule[entity_position] and bool(capsule[entity_position]['label']):
             capsule[entity_position]['uri'] = str(
                 self._rdf_builder.create_resource_uri('LW', capsule[entity_position]['label'].lower()))
         return capsule
 
     def link_predicates(self, capsule):
-        if 'predicate' in capsule and not capsule['predicate']['uri'] and capsule['label']:
+        if 'predicate' in capsule and not capsule['predicate']['uri'] and bool(capsule['predicate']['label']):
             capsule['predicate']['uri'] = str(
                 self._rdf_builder.create_resource_uri('N2MU', capsule['predicate']['label'].lower()))
 

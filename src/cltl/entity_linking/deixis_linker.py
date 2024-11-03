@@ -40,7 +40,7 @@ class DeixisLinker(BasicLinker):
         return capsule
 
     def link_predicates(self, capsule):
-        if 'predicate' in capsule and not capsule['predicate']['uri']:
+        if 'predicate' in capsule and not capsule['predicate']['uri'] and bool(capsule['predicate']['label']):
             capsule['predicate']['uri'] = str(
                 self._rdf_builder.create_resource_uri('N2MU', capsule['predicate']['label'].lower()))
 
